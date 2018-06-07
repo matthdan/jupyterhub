@@ -78,7 +78,7 @@ class UserDict(dict):
 
     def count_active_users(self):
         """Count the number of user servers that are active/pending/ready
-        
+
         Returns dict with counts of active/pending/ready servers
         """
         counts = defaultdict(lambda : 0)
@@ -182,7 +182,7 @@ class User(HasTraits):
         if spawner_class is None:
             spawner_class = self.spawner_class
         self.log.debug("Creating %s for %s:%s", spawner_class, self.name, name)
-        
+
         orm_spawner = self.orm_spawners.get(name)
         if orm_spawner is None:
             orm_spawner = orm.Spawner(user=self.orm_user, name=name)
@@ -193,7 +193,7 @@ class User(HasTraits):
             # migrate user.state to spawner.state
             orm_spawner.state = self.state
             self.state = None
-        
+
         spawn_kwargs = dict(
             user=self,
             orm_spawner=orm_spawner,
@@ -213,7 +213,7 @@ class User(HasTraits):
     @property
     def spawner(self):
         return self.spawners['']
-    
+
     @spawner.setter
     def spawner(self, spawner):
         self.spawners[''] = spawner
@@ -306,13 +306,13 @@ class User(HasTraits):
     @gen.coroutine
     def spawn(self, server_name='', options=None):
         """Start the user's spawner
-        
+
         depending from the value of JupyterHub.allow_named_servers
-        
+
         if False:
         JupyterHub expects only one single-server per user
         url of the server will be /user/:name
-        
+
         if True:
         JupyterHub expects more than one single-server per user
         url of the server will be /user/:name/:server_name
@@ -378,7 +378,7 @@ class User(HasTraits):
             ip_port = yield gen.with_timeout(timedelta(seconds=spawner.start_timeout), f)
             if ip_port:
                 # get ip, port info from return value of start()
-                server.ip, server.port = ip_port
+                (server.ip, server.port), server.proto = ip_port, 'https'
             else:
                 # prior to 0.7, spawners had to store this info in user.server themselves.
                 # Handle < 0.7 behavior with a warning, assuming info was stored in db by the Spawner.
